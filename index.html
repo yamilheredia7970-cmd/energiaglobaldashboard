@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="es" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard Analítico - Mercado Energético</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body class="bg-slate-950 text-slate-200 font-sans min-h-screen p-4 md:p-8">
+    <div class="max-w-7xl mx-auto space-y-6">
+      <!-- Header -->
+      <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-900 p-6 rounded-xl border border-slate-800">
+        <div>
+          <h1 class="text-3xl font-bold text-white tracking-tight">Global Energy Analytics</h1>
+          <p class="text-slate-400 text-sm mt-1">OWID Energy Data - Análisis Estratégico</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <label for="dateRange" class="text-sm font-medium text-slate-400">Rango de Fechas:</label>
+          <select id="dateRange" class="bg-slate-800 border border-slate-700 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none cursor-pointer transition-colors hover:bg-slate-700">
+            <option value="30">Últimos 30 días</option>
+            <option value="90">Últimos 90 días</option>
+            <option value="ytd">Año hasta la fecha (YTD)</option>
+            <option value="5y">Últimos 5 años</option>
+            <option value="all" selected>Histórico Completo</option>
+          </select>
+        </div>
+      </header>
+
+      <!-- KPIs -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- KPI 1 -->
+        <div class="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-sm">
+          <h3 class="text-slate-400 text-sm font-medium">Consumo Global Total</h3>
+          <div class="mt-2 flex items-baseline gap-2">
+            <span class="text-3xl font-bold text-white" id="kpi-consumo">160,000</span>
+            <span class="text-sm text-slate-500">TWh</span>
+          </div>
+          <div class="mt-2 text-sm text-emerald-400 flex items-center gap-1">
+            <span>↑ 2.4% vs año anterior</span>
+          </div>
+        </div>
+        <!-- KPI 2 -->
+        <div class="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-sm">
+          <h3 class="text-slate-400 text-sm font-medium">Mix Renovable Global</h3>
+          <div class="mt-2 flex items-baseline gap-2">
+            <span class="text-3xl font-bold text-white" id="kpi-mix">29.4</span>
+            <span class="text-sm text-slate-500">%</span>
+          </div>
+          <div class="mt-2 text-sm text-emerald-400 flex items-center gap-1">
+            <span>↑ 1.8 pts vs año anterior</span>
+          </div>
+        </div>
+        <!-- KPI 3 -->
+        <div class="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-sm">
+          <h3 class="text-slate-400 text-sm font-medium">Intensidad Energética</h3>
+          <div class="mt-2 flex items-baseline gap-2">
+            <span class="text-3xl font-bold text-white" id="kpi-intensidad">1.24</span>
+            <span class="text-sm text-slate-500">kWh/$ PIB</span>
+          </div>
+          <div class="mt-2 text-sm text-emerald-400 flex items-center gap-1">
+            <span>↓ 0.5% (Mejora eficiencia)</span>
+          </div>
+        </div>
+        <!-- KPI 4 -->
+        <div class="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-sm">
+          <h3 class="text-slate-400 text-sm font-medium">Riesgo Fósil (Top 10 Países)</h3>
+          <div class="mt-2 flex items-baseline gap-2">
+            <span class="text-3xl font-bold text-white" id="kpi-riesgo">62.1</span>
+            <span class="text-sm text-slate-500">%</span>
+          </div>
+          <div class="mt-2 text-sm text-rose-400 flex items-center gap-1">
+            <span>Alta exposición a CBAM</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-sm">
+          <h3 class="text-lg font-semibold text-white mb-1">El Cambio de Régimen</h3>
+          <p class="text-xs text-slate-400 mb-4">Evolución del mix energético global (Fósil vs Renovable)</p>
+          <div class="relative h-72 w-full">
+            <canvas id="chartRegime"></canvas>
+          </div>
+        </div>
+        <div class="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-sm">
+          <h3 class="text-lg font-semibold text-white mb-1">Eficiencia vs Riqueza</h3>
+          <p class="text-xs text-slate-400 mb-4">PIB per Cápita vs Consumo de Energía (Líderes del Decoupling)</p>
+          <div class="relative h-72 w-full">
+            <canvas id="chartEfficiency"></canvas>
+          </div>
+        </div>
+        <div class="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-sm">
+          <h3 class="text-lg font-semibold text-white mb-1">Riesgo de Cadena de Suministro</h3>
+          <p class="text-xs text-slate-400 mb-4">Dependencia del carbón en principales hubs manufactureros</p>
+          <div class="relative h-72 w-full">
+            <canvas id="chartSupplyChain"></canvas>
+          </div>
+        </div>
+        <div class="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-sm">
+          <h3 class="text-lg font-semibold text-white mb-1">Momentum de Inversión</h3>
+          <p class="text-xs text-slate-400 mb-4">Adición neta de capacidad anual (TWh)</p>
+          <div class="relative h-72 w-full">
+            <canvas id="chartMomentum"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Insights -->
+      <div class="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-sm">
+        <h3 class="text-xl font-bold text-white mb-4">Insights Estratégicos & Recomendaciones</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-slate-800/50 p-4 rounded-lg border border-slate-700/50">
+            <h4 class="text-emerald-400 font-semibold mb-2 flex items-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+              Optimizar (CAPEX)
+            </h4>
+            <p class="text-sm text-slate-300 leading-relaxed">Redirigir el gasto de capital hacia la electrificación de procesos internos. El ROI de estas iniciativas es el más alto de la década debido a la deflación solar y el encarecimiento fósil.</p>
+          </div>
+          <div class="bg-slate-800/50 p-4 rounded-lg border border-slate-700/50">
+            <h4 class="text-rose-400 font-semibold mb-2 flex items-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+              Reducir (Riesgo)
+            </h4>
+            <p class="text-sm text-slate-300 leading-relaxed">Auditar el Scope 3 en Asia. Proveedores en India y China presentan un alto riesgo de penalizaciones por impuestos fronterizos al carbono (CBAM) debido a su dependencia del carbón.</p>
+          </div>
+          <div class="bg-slate-800/50 p-4 rounded-lg border border-slate-700/50">
+            <h4 class="text-blue-400 font-semibold mb-2 flex items-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+              Potenciar (Sourcing)
+            </h4>
+            <p class="text-sm text-slate-300 leading-relaxed">Asegurar Acuerdos de Compra de Energía (PPAs) a largo plazo en mercados con adopción renovable exponencial para fijar costos operativos bajos y predecibles.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
