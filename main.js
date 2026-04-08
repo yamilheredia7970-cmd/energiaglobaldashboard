@@ -1,7 +1,3 @@
-import './index.css';
-
-declare const Chart: any;
-
 // Configuración global de Chart.js para modo oscuro
 Chart.defaults.color = '#94a3b8';
 Chart.defaults.font.family = '"Inter", ui-sans-serif, system-ui, sans-serif';
@@ -18,11 +14,11 @@ document.addEventListener('DOMContentLoaded', () => {
   setupDateFilter();
 });
 
-const charts: Record<string, any> = {};
+const charts = {};
 
 function initCharts() {
   // 1. Regime Shift (Area Chart)
-  const ctxRegime = document.getElementById('chartRegime') as HTMLCanvasElement;
+  const ctxRegime = document.getElementById('chartRegime');
   charts.regime = new Chart(ctxRegime, {
     type: 'line',
     data: {
@@ -61,7 +57,7 @@ function initCharts() {
   });
 
   // 2. Efficiency vs Wealth (Scatter)
-  const ctxEfficiency = document.getElementById('chartEfficiency') as HTMLCanvasElement;
+  const ctxEfficiency = document.getElementById('chartEfficiency');
   charts.efficiency = new Chart(ctxEfficiency, {
     type: 'scatter',
     data: {
@@ -86,10 +82,9 @@ function initCharts() {
       plugins: {
         tooltip: {
           callbacks: {
-            label: (ctx: any) => `${ctx.raw.country}: PIB $${ctx.raw.x}, Energía: ${ctx.raw.y} kWh`
+            label: (ctx) => `${ctx.raw.country}: PIB $${ctx.raw.x}, Energía: ${ctx.raw.y} kWh`
           }
-        },
-        legend: { display: false }
+        }
       },
       scales: {
         x: { title: { display: true, text: 'PIB per Cápita ($)' } },
@@ -99,7 +94,7 @@ function initCharts() {
   });
 
   // 3. Supply Chain Risk (Bar)
-  const ctxSupply = document.getElementById('chartSupplyChain') as HTMLCanvasElement;
+  const ctxSupply = document.getElementById('chartSupplyChain');
   charts.supply = new Chart(ctxSupply, {
     type: 'bar',
     data: {
@@ -122,7 +117,7 @@ function initCharts() {
   });
 
   // 4. Investment Momentum (Line)
-  const ctxMomentum = document.getElementById('chartMomentum') as HTMLCanvasElement;
+  const ctxMomentum = document.getElementById('chartMomentum');
   charts.momentum = new Chart(ctxMomentum, {
     type: 'line',
     data: {
@@ -144,22 +139,21 @@ function initCharts() {
 }
 
 function setupDateFilter() {
-  const select = document.getElementById('dateRange') as HTMLSelectElement;
+  const select = document.getElementById('dateRange');
   select.addEventListener('change', (e) => {
-    const val = (e.target as HTMLSelectElement).value;
+    const val = e.target.value;
     updateKPIs(val);
     updateCharts(val);
   });
 }
 
-function updateKPIs(range: string) {
+function updateKPIs(range) {
   const kpiConsumo = document.getElementById('kpi-consumo');
   const kpiMix = document.getElementById('kpi-mix');
   const kpiIntensidad = document.getElementById('kpi-intensidad');
 
   if (!kpiConsumo || !kpiMix || !kpiIntensidad) return;
 
-  // Simulación de cambio de datos según el filtro
   if (range === '30' || range === '90') {
     kpiConsumo.innerText = '13,500';
     kpiMix.innerText = '31.2';
@@ -179,18 +173,16 @@ function updateKPIs(range: string) {
   }
 }
 
-function updateCharts(range: string) {
-  // Animación simple para simular la actualización de datos al cambiar el filtro
+function updateCharts(range) {
   Object.values(charts).forEach(chart => {
-    chart.data.datasets.forEach((ds: any) => {
+    chart.data.datasets.forEach(ds => {
       if (ds.data[0] !== undefined && typeof ds.data[0] === 'number') {
-        ds.data = ds.data.map((v: number) => {
-          const variation = (Math.random() * 0.15) - 0.05; // -5% to +10%
+        ds.data = ds.data.map(v => {
+          const variation = (Math.random() * 0.15) - 0.05;
           return Number((v * (1 + variation)).toFixed(1));
         });
       } else if (ds.data[0] !== undefined && typeof ds.data[0] === 'object') {
-        // Para el scatter plot
-        ds.data = ds.data.map((v: any) => ({
+        ds.data = ds.data.map(v => ({
           ...v,
           x: Number((v.x * (1 + ((Math.random() * 0.1) - 0.05))).toFixed(0)),
           y: Number((v.y * (1 + ((Math.random() * 0.1) - 0.05))).toFixed(0))
@@ -200,4 +192,3 @@ function updateCharts(range: string) {
     chart.update();
   });
 }
-
